@@ -3,19 +3,42 @@ const params = new URLSearchParams(window.location.hash.slice(1));
 const token = params.get('access_token');
 
 if (token) {
-    localStorage.setItem('discord_logged_in', 'true');
-    localStorage.setItem('user_name', 'Verified User');
-    window.location.hash = ''; // Clear hash for a clean URL
+    // Fetch user data from Discord
+    fetch('https://discord.com/api/users/@me', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    .then(res => res.json())
+    .then(user => {
+        localStorage.setItem('discord_logged_in', 'true');
+        localStorage.setItem('discord_user', JSON.stringify({
+            name: user.username,
+            avatar: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+        }));
+        window.location.hash = '';
+        window.location.reload();
+    })
+    .catch(err => console.error('Discord Auth Error:', err));
 }
 
 const isLoggedIn = localStorage.getItem('discord_logged_in') === 'true';
 const isLoginPage = window.location.pathname.includes('login.html');
+const userData = JSON.parse(localStorage.getItem('discord_user') || '{}');
 
 if (!isLoggedIn && !isLoginPage) {
     window.location.href = 'login.html';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Populate User Profile
+    if (isLoggedIn && userData) {
+        const usernameEl = document.querySelector('.username');
+        const avatarEl = document.querySelector('.avatar');
+        if (usernameEl) usernameEl.textContent = userData.name || 'Discord User';
+        if (avatarEl && userData.avatar) avatarEl.src = userData.avatar;
+    }
+
     // Initialize Lucide icons
     lucide.createIcons();
 
@@ -75,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('discord_logged_in');
-            localStorage.removeItem('user_name');
+            localStorage.removeItem('discord_user');
             window.location.reload();
         });
     }
