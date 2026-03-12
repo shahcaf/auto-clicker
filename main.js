@@ -1,4 +1,13 @@
-// Discord Auth Simulation
+// Discord Auth Logic
+const params = new URLSearchParams(window.location.hash.slice(1));
+const token = params.get('access_token');
+
+if (token) {
+    localStorage.setItem('discord_logged_in', 'true');
+    localStorage.setItem('user_name', 'Verified User');
+    window.location.hash = ''; // Clear hash for a clean URL
+}
+
 const isLoggedIn = localStorage.getItem('discord_logged_in') === 'true';
 const isLoginPage = window.location.pathname.includes('login.html');
 
