@@ -31,8 +31,20 @@ const isLoggedIn = localStorage.getItem('discord_logged_in') === 'true';
 const isLoginPage = window.location.pathname.includes('login.html');
 const userData = JSON.parse(localStorage.getItem('discord_user') || '{}');
 
-// Determine if we should redirect. If there is a token in the URL, we wait for it to process.
-if (!isLoggedIn && !isLoginPage && !token) {
+console.log('Login Status:', { isLoggedIn, isLoginPage, hasToken: !!token });
+
+// 1. If we have a token, the fetch logic above will handle it. We do nothing else.
+if (token) {
+    // Fetch logic is already running...
+} 
+// 2. If logged in and on login page, go to dashboard
+else if (isLoggedIn && isLoginPage) {
+    console.log('Already logged in, redirecting to dashboard...');
+    window.location.href = 'index.html';
+} 
+// 3. If NOT logged in and NOT on login page, force login
+else if (!isLoggedIn && !isLoginPage) {
+    console.log('Not logged in, forcing redirect to login page...');
     window.location.href = 'login.html';
 }
 
