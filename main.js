@@ -1,3 +1,11 @@
+// Discord Auth Simulation
+const isLoggedIn = localStorage.getItem('discord_logged_in') === 'true';
+const isLoginPage = window.location.pathname.includes('login.html');
+
+if (!isLoggedIn && !isLoginPage) {
+    window.location.href = 'login.html';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Lucide icons
     lucide.createIcons();
@@ -50,6 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 mockupBtn.classList.add('active');
                 mockupBtn.textContent = 'Stop Clicker';
             }
+        });
+    }
+
+    // Logout logic
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('discord_logged_in');
+            localStorage.removeItem('user_name');
+            window.location.reload();
         });
     }
 
