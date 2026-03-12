@@ -44,28 +44,19 @@
         document.getElementById('discord-login-btn').addEventListener('click', () => {
             const btn = document.getElementById('discord-login-btn');
             
-            // If Client ID is set, use real Discord OAuth2
-            if (CONFIG.DISCORD_CLIENT_ID && CONFIG.DISCORD_CLIENT_ID !== 'YOUR_CLIENT_ID_HERE') {
-                const scope = encodeURIComponent('identify');
-                const redirect = encodeURIComponent(CONFIG.DISCORD_REDIRECT_URI);
-                const url = `https://discord.com/api/oauth2/authorize?client_id=${CONFIG.DISCORD_CLIENT_ID}&redirect_uri=${redirect}&response_type=token&scope=${scope}`;
-                
-                btn.innerHTML = '<span class="loader"></span> Redirecting to Discord...';
-                btn.disabled = true;
-                
-                window.location.href = url;
-            } else {
-                // Fallback to simulation for demo purposes
-                btn.innerHTML = '<span class="loader"></span> Logging in (Demo Mode)...';
-                btn.style.opacity = '0.7';
-                btn.disabled = true;
-
-                setTimeout(() => {
-                    localStorage.setItem('discord_logged_in', 'true');
-                    localStorage.setItem('user_name', 'Demo User');
-                    window.location.href = 'index.html';
-                }, 1500);
+            if (!CONFIG.DISCORD_CLIENT_ID || CONFIG.DISCORD_CLIENT_ID === 'YOUR_CLIENT_ID_HERE') {
+                alert('Management Alert: Please enter your DISCORD_CLIENT_ID in config.js to enable real login.');
+                return;
             }
+
+            const scope = encodeURIComponent('identify');
+            const redirect = encodeURIComponent(CONFIG.DISCORD_REDIRECT_URI);
+            const url = `https://discord.com/api/oauth2/authorize?client_id=${CONFIG.DISCORD_CLIENT_ID}&redirect_uri=${redirect}&response_type=token&scope=${scope}`;
+            
+            btn.innerHTML = '<span class="loader"></span> Connecting to Discord...';
+            btn.disabled = true;
+            
+            window.location.href = url;
         });
     </script>
 </body>
