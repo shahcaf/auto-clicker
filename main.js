@@ -3,6 +3,7 @@ const params = new URLSearchParams(window.location.hash.slice(1));
 const token = params.get('access_token');
 
 if (token) {
+    console.log('Access token detected, fetching user data...');
     // Fetch user data from Discord
     fetch('https://discord.com/api/users/@me', {
         headers: {
@@ -11,22 +12,27 @@ if (token) {
     })
     .then(res => res.json())
     .then(user => {
+        console.log('User data fetched:', user.username);
         localStorage.setItem('discord_logged_in', 'true');
         localStorage.setItem('discord_user', JSON.stringify({
             name: user.username,
             avatar: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
         }));
-        window.location.hash = '';
+        window.location.hash = ''; // Clear token from URL
         window.location.reload();
     })
-    .catch(err => console.error('Discord Auth Error:', err));
+    .catch(err => {
+        console.error('Discord Auth Error:', err);
+        alert('Discord Login Failed. Please check console for errors.');
+    });
 }
 
 const isLoggedIn = localStorage.getItem('discord_logged_in') === 'true';
 const isLoginPage = window.location.pathname.includes('login.html');
 const userData = JSON.parse(localStorage.getItem('discord_user') || '{}');
 
-if (!isLoggedIn && !isLoginPage) {
+// Determine if we should redirect. If there is a token in the URL, we wait for it to process.
+if (!isLoggedIn && !isLoginPage && !token) {
     window.location.href = 'login.html';
 }
 
