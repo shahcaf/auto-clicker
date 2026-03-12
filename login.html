@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
+    <script src="config.js?v=2"></script>
     <script src="main.js"></script>
     <script>
         lucide.createIcons();
@@ -45,7 +45,7 @@
             const btn = document.getElementById('discord-login-btn');
             
             if (!CONFIG.DISCORD_CLIENT_ID || CONFIG.DISCORD_CLIENT_ID === 'YOUR_CLIENT_ID_HERE') {
-                alert('Management Alert: Please enter your DISCORD_CLIENT_ID in config.js to enable real login.');
+                alert(`Management Alert: No ID found. Found: "${CONFIG.DISCORD_CLIENT_ID}". Please ensure config.js is saved with your real ID.`);
                 return;
             }
 
